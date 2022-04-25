@@ -1,0 +1,141 @@
+#Oxygen by Irviana Swittenburge
+basebeat= "C:/Users/irvis/OneDrive/Documents/Weird-beat-loop-120-bpm.wav"
+#this is the only outside sample used. from: https://orangefreesounds.com/weird-beat-loop-120-bpm/ 
+#You will need to copy your own path to run in sonic pi. The rest of the song will work after that. 
+
+
+in_thread do
+  620.times do
+    sample basebeat
+    sleep 1
+  end
+end
+
+
+sleep 10
+
+live_loop :bb do
+  
+  sample basebeat, rate: 0.75, onset: pick, amp: 0.65
+  sleep 0.125
+end
+
+sleep 10
+
+live_loop :cc do
+  with_fx :bitcrusher do
+    with_fx :slicer do
+      sample :ambi_choir, rpitch: 1, onset: pick, cutoff: rrand(70,130), rate: 0.5, amp: 0.5
+      sleep 2
+    end
+  end
+end
+
+sleep 22
+live_loop :hey do
+  with_fx :distortion do
+    play scale(:B1, :minor_pentatonic).tick, attack: 0.5, release: 0, amp: 1, cutoff: (ring 70, 90, 100, 130).look
+    sleep 0.5
+  end
+end
+live_loop :start do
+  use_random_seed 15
+  play (scale :Gb4, :minor_pentatonic).choose, release: 0.1, amp: 0.75
+  sleep 0.125
+end
+live_loop :starttwo do
+  play (scale :Cb4, :minor_pentatonic).choose, release: 0.1, amp: 1
+  sleep 0.125
+end
+with_fx :reverb, room: 1 do
+  live_loop :time do
+    synth :prophet, release: 8, note: :e1, cutoff: 90, amp: 0.3
+    sleep 8
+  end
+end
+
+in_thread do
+  240.times do
+    ##format from "examples: [wizard]time machine"in sonic pi lines 17-21
+    use_synth [:chiplead, :dpulse].choose
+    sleep 0.125 / 2
+    play scale(:B1, :minor_pentatonic).tick, attack: 0.1, release: 0, amp: 0.5, cutoff: (ring 70, 90, 100, 130).look
+    sleep 0.125 / 2
+  end
+end
+in_thread do
+  480.times do
+    use_synth [:sine, :dull_bell].choose
+    sleep 0.125 / 2
+    play scale(:B1, :minor_pentatonic).tick, attack: 0.5, release: 0, amp: 0.5, cutoff: (ring 70, 90, 100, 130).look
+    sleep 0.125 / 2
+  end
+end
+sleep 15
+live_loop :backbeat do
+  sample :loop_garzul, rate: 0.5, fnish: 0.25, amp: 0.2
+  sample :loop_industrial, beat_stretch: 4, amp: 0.2
+  sleep 4
+end
+with_fx :echo, room: 0.8, decay: 8, phase: 0.25, mix: 0.4 do
+  live_loop :rhythm do
+    ##next 2 lines from "examples: [wizard]blip rhythm"in sonicpi,bottom function.
+    sample :drum_heavy_kick, amp: 0.5
+    sample :elec_plip, rate: [0.5, 2, 1, 4].choose * [1, 2, 5, 10].choose, amp: 0.6
+    sleep 1
+  end
+end
+live_loop :basebeat do
+  sample :bd_haus, amp: 1
+  sleep 0.5
+end
+sleep 22
+#next 9 lines adapted from "examples: [sorcerer]Rerezzed"in sonicpi.  added random seed, changed scale to b1, and took out t variable
+notes = (scale :b1, :minor_pentatonic, num_octaves: 2).shuffle
+in_thread do
+  15.times do
+    use_random_seed 255
+    with_fx :bitcrusher do
+      s = synth :dsaw, note: :e3, sustain: 5, release: 0, amp: 0.5
+      64.times do
+        sleep 0.125
+        control s, note: notes.tick
+      end
+    end
+  end
+end
+sleep 10
+live_loop :spice do
+  # #next 3 lines from "examples: [sorcerer]Squarekit" in sonicpi. changed phase, amp and sleep time.
+  with_fx :slicer, phase: 3, invert_wave: 1, wave: 0 do
+    with_fx :slicer, wave: 0, phase: 0.25 do
+      sample :loop_mika, rate: 1, amp: 3
+    end
+    sleep 5
+  end
+end
+sleep 15
+live_loop :backgrnd do
+  use_random_seed 12
+  use_synth :rodeo
+  play scale(:Cb4, :major).choose, release: 0.1, amp: 0.7
+  sleep 0.25
+end
+sleep 5
+live_loop :backgrnd2 do
+  use_synth :rodeo
+  play scale(:Cb4, :major).choose, release: 0.1, amp: 0.7
+  sleep 0.25
+end
+sleep 5
+live_loop :backgrnd3 do
+  use_synth :rodeo
+  play scale(:b4, :major).choose, release: 0.1, amp: 0.7
+  sleep 0.25
+end
+sleep 5
+live_loop :backgrnd4 do
+  use_synth :rodeo
+  play scale(:b1, :major).choose, release: 0.1, amp: 0.7
+  sleep 0.25
+end
